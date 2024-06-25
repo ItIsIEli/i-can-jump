@@ -3,12 +3,22 @@ namespace SpriteKind {
     export const SkateBoard = SpriteKind.create()
     export const ball = SpriteKind.create()
     export const bAt = SpriteKind.create()
+    export const Oil = SpriteKind.create()
+    export const OILBLOB = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     game.gameOver(false)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile1`, function (sprite, location) {
     game.gameOver(false)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.OILBLOB, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    if (mySprite.y < otherSprite.y) {
+        info.changeScoreBy(5)
+    } else {
+        info.changeLifeBy(-2)
+    }
 })
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (mySprite.vy == 0) {
@@ -21,6 +31,30 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, l
 sprites.onOverlap(SpriteKind.Player, SpriteKind.FootBall, function (sprite, otherSprite) {
     info.changeScoreBy(2)
     sprites.destroy(otherSprite)
+    music.play(music.stringPlayable("C D E F G A B C5 ", 500), music.PlaybackMode.UntilDone)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Oil, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    Oil_BLOB = sprites.create(img`
+        . . f f f f f f f f . . . . . . 
+        . f f f d f f d f f f . . . . . 
+        . f f f b d f b d f f f f . . . 
+        . . f f f f f f f f f f . . . . 
+        . f f f f f . f f f f f f f . . 
+        . . f f f f f f f f . f f f f . 
+        . . f f f d d b f f f f f f f f 
+        . f f f f d f f f f f f f f f f 
+        . f f f f f f f f f f f f f f f 
+        . . f f f f f f f f f f f f f f 
+        . f f f f f f f . f f f f f . f 
+        . f f f f f f f f f f f f . . f 
+        . f f f f . f f f f f f f f . . 
+        . . . . f f f f f f . f f f . . 
+        . . . . . . f f f f . f f f . . 
+        . . . . . . f f f . . f f . . . 
+        `, SpriteKind.OILBLOB)
+    Oil_BLOB.setPosition(mySprite.x + 60, mySprite.y + -60)
+    Oil_BLOB.follow(mySprite)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.bAt, function (sprite, otherSprite) {
     tiles.placeOnTile(mySprite, tiles.getTileLocation(81, 10))
@@ -71,6 +105,9 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.SkateBoard, function (sprite, ot
     Unsharpenedpencil.setPosition(mySprite.x + 60, mySprite.y + -60)
     Unsharpenedpencil.follow(mySprite)
 })
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile10`, function (sprite, location) {
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(81, 10))
+})
 sprites.onOverlap(SpriteKind.Player, SpriteKind.ball, function (sprite, otherSprite) {
     tiles.placeOnTile(mySprite, tiles.getTileLocation(41, 12))
 })
@@ -83,6 +120,8 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     }
 })
 let Unsharpenedpencil: Sprite = null
+let Oil_BLOB: Sprite = null
+let OIL: Sprite = null
 let BAT: Sprite = null
 let BALL: Sprite = null
 let Skate_Board: Sprite = null
@@ -307,4 +346,26 @@ for (let value of tiles.getTilesByType(assets.tile`myTile8`)) {
         `, SpriteKind.bAt)
     tiles.placeOnTile(BAT, value)
     tiles.setTileAt(value, assets.tile`transparency16`)
+    for (let value of tiles.getTilesByType(assets.tile`myTile9`)) {
+        OIL = sprites.create(img`
+            . . . . . . . . . . . . . . . . 
+            . . . . . . . . . . . . . . . . 
+            . . . . f f f . . f f f f . . . 
+            . . . f f f f f f f f f f f . . 
+            . . . f f f f f f f f f . f f . 
+            . . . f f f f f f f f f . . f f 
+            . . . f 1 1 1 f 1 f 1 f f . f f 
+            . . . f 1 f 1 f f f 1 f f . f f 
+            . . . f 1 f 1 f 1 f 1 f f f f . 
+            . . . f 1 1 1 f 1 f 1 f f f . . 
+            . . . f f f f f f f f f f . . . 
+            . . . f f f f f f f f f f . . . 
+            . . . f f f f f f f f f f . . . 
+            . . . f f f f f f f f f f . . . 
+            . . . f f f f f f f f f f . . . 
+            . . . . f f f f f f f f . . . . 
+            `, SpriteKind.Oil)
+        tiles.placeOnTile(OIL, value)
+        tiles.setTileAt(value, assets.tile`transparency16`)
+    }
 }
