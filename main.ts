@@ -13,9 +13,6 @@ controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
         mySprite.vy = -150
     }
 })
-controller.A.onEvent(ControllerButtonEvent.Pressed, function () {
-	
-})
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile4`, function (sprite, location) {
     game.gameOver(true)
 })
@@ -23,10 +20,11 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, l
     game.gameOver(false)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.FootBall, function (sprite, otherSprite) {
-    info.changeScoreBy(1)
+    info.changeScoreBy(2)
     sprites.destroy(otherSprite)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.SkateBoard, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
     Unsharpenedpencil = sprites.create(img`
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
@@ -36,7 +34,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.SkateBoard, function (sprite, ot
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         f f f f f f f f f f f f f f f f 
-        3 3 b 5 5 5 5 5 5 5 5 5 d d d f 
+        3 3 b 5 5 5 5 5 5 5 5 5 d d d d 
         3 3 b 5 5 5 5 5 5 5 5 5 5 d d d 
         3 3 b 5 5 5 5 5 5 5 5 5 5 d d d 
         f f f f f f f f f f f f f f f f 
@@ -45,11 +43,45 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.SkateBoard, function (sprite, ot
         . . . . . . . . . . . . . . . . 
         . . . . . . . . . . . . . . . . 
         `, SpriteKind.Enemy)
+    animation.runImageAnimation(
+    Unsharpenedpencil,
+    [img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        f f f f f f f f f f f f f f f f 
+        3 3 b 5 5 5 5 5 5 5 5 5 d d d d 
+        3 3 b 5 5 5 5 5 5 5 5 5 5 d d d 
+        3 3 b 5 5 5 5 5 5 5 5 5 5 d d d 
+        f f f f f f f f f f f f f f f f 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `],
+    500,
+    true
+    )
+    Unsharpenedpencil.setPosition(mySprite.x + 60, mySprite.y + -60)
+    Unsharpenedpencil.follow(mySprite)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSprite) {
+    sprites.destroy(otherSprite)
+    if (mySprite.y < otherSprite.y) {
+        info.changeScoreBy(5)
+    } else {
+        info.changeLifeBy(-1)
+    }
 })
 let Unsharpenedpencil: Sprite = null
 let Skate_Board: Sprite = null
 let Foot_Ball: Sprite = null
 let mySprite: Sprite = null
+info.setLife(6)
 scene.setBackgroundColor(9)
 mySprite = sprites.create(img`
     . . . . f f f f f f f . . . . . 
