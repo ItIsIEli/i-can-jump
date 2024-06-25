@@ -5,6 +5,9 @@ namespace SpriteKind {
     export const bAt = SpriteKind.create()
     export const Oil = SpriteKind.create()
     export const OILBLOB = SpriteKind.create()
+    export const pizza = SpriteKind.create()
+    export const bubbles = SpriteKind.create()
+    export const thing = SpriteKind.create()
 }
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile0`, function (sprite, location) {
     game.gameOver(false)
@@ -19,11 +22,18 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.OILBLOB, function (sprite, other
     } else {
         info.changeLifeBy(-2)
     }
+    music.play(music.melodyPlayable(music.baDing), music.PlaybackMode.UntilDone)
 })
 controller.up.onEvent(ControllerButtonEvent.Pressed, function () {
     if (mySprite.vy == 0) {
         mySprite.vy = -150
     }
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.bubbles, function (sprite, otherSprite) {
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(122, 13))
+})
+scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile12`, function (sprite, location) {
+    info.changeLifeBy(1)
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, location) {
     game.gameOver(false)
@@ -31,7 +41,7 @@ scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile3`, function (sprite, l
 sprites.onOverlap(SpriteKind.Player, SpriteKind.FootBall, function (sprite, otherSprite) {
     info.changeScoreBy(2)
     sprites.destroy(otherSprite)
-    music.play(music.stringPlayable("C D E F G A B C5 ", 500), music.PlaybackMode.UntilDone)
+    music.play(music.melodyPlayable(music.baDing), music.PlaybackMode.UntilDone)
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.Oil, function (sprite, otherSprite) {
     sprites.destroy(otherSprite)
@@ -107,6 +117,10 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.SkateBoard, function (sprite, ot
 })
 scene.onOverlapTile(SpriteKind.Player, assets.tile`myTile10`, function (sprite, location) {
     tiles.placeOnTile(mySprite, tiles.getTileLocation(81, 10))
+    info.changeLifeBy(-1)
+})
+sprites.onOverlap(SpriteKind.Player, SpriteKind.thing, function (sprite, otherSprite) {
+    tiles.placeOnTile(mySprite, tiles.getTileLocation(128, 10))
 })
 sprites.onOverlap(SpriteKind.Player, SpriteKind.ball, function (sprite, otherSprite) {
     tiles.placeOnTile(mySprite, tiles.getTileLocation(41, 12))
@@ -118,9 +132,13 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
     } else {
         info.changeLifeBy(-1)
     }
+    music.play(music.melodyPlayable(music.baDing), music.PlaybackMode.UntilDone)
 })
 let Unsharpenedpencil: Sprite = null
 let Oil_BLOB: Sprite = null
+let thingy: Sprite = null
+let bubbles: Sprite = null
+let pizza: Sprite = null
 let OIL: Sprite = null
 let BAT: Sprite = null
 let BALL: Sprite = null
@@ -346,26 +364,92 @@ for (let value of tiles.getTilesByType(assets.tile`myTile8`)) {
         `, SpriteKind.bAt)
     tiles.placeOnTile(BAT, value)
     tiles.setTileAt(value, assets.tile`transparency16`)
-    for (let value of tiles.getTilesByType(assets.tile`myTile9`)) {
-        OIL = sprites.create(img`
-            . . . . . . . . . . . . . . . . 
-            . . . . . . . . . . . . . . . . 
-            . . . . f f f . . f f f f . . . 
-            . . . f f f f f f f f f f f . . 
-            . . . f f f f f f f f f . f f . 
-            . . . f f f f f f f f f . . f f 
-            . . . f 1 1 1 f 1 f 1 f f . f f 
-            . . . f 1 f 1 f f f 1 f f . f f 
-            . . . f 1 f 1 f 1 f 1 f f f f . 
-            . . . f 1 1 1 f 1 f 1 f f f . . 
-            . . . f f f f f f f f f f . . . 
-            . . . f f f f f f f f f f . . . 
-            . . . f f f f f f f f f f . . . 
-            . . . f f f f f f f f f f . . . 
-            . . . f f f f f f f f f f . . . 
-            . . . . f f f f f f f f . . . . 
-            `, SpriteKind.Oil)
-        tiles.placeOnTile(OIL, value)
-        tiles.setTileAt(value, assets.tile`transparency16`)
-    }
+}
+for (let value of tiles.getTilesByType(assets.tile`myTile9`)) {
+    OIL = sprites.create(img`
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . f f f . . f f f f . . . 
+        . . . f f f f f f f f f f f . . 
+        . . . f f f f f f f f f . f f . 
+        . . . f f f f f f f f f . . f f 
+        . . . f 1 1 1 f 1 f 1 f f . f f 
+        . . . f 1 f 1 f f f 1 f f . f f 
+        . . . f 1 f 1 f 1 f 1 f f f f . 
+        . . . f 1 1 1 f 1 f 1 f f f . . 
+        . . . f f f f f f f f f f . . . 
+        . . . f f f f f f f f f f . . . 
+        . . . f f f f f f f f f f . . . 
+        . . . f f f f f f f f f f . . . 
+        . . . f f f f f f f f f f . . . 
+        . . . . f f f f f f f f . . . . 
+        `, SpriteKind.Oil)
+    tiles.placeOnTile(OIL, value)
+    tiles.setTileAt(value, assets.tile`transparency16`)
+}
+for (let value of tiles.getTilesByType(assets.tile`myTile12`)) {
+    pizza = sprites.create(img`
+        . . . . . f f . . . . . . . . . 
+        . . . . f e e f . . . . . . . . 
+        . . . f e e f f . . . . . . . . 
+        . . f e e f 5 2 f . . . . . . . 
+        . f e e f 5 5 2 f . . . . . . . 
+        . f e f 5 2 2 5 5 f . . . . . . 
+        . . f f 5 2 2 5 5 5 f . . . . . 
+        . . . . f f 5 5 2 2 5 f . . . . 
+        . . . . . . f 5 2 2 5 f . . . . 
+        . . . . . . . f 5 5 5 2 f . . . 
+        . . . . . . . . f f 5 2 f . . . 
+        . . . . . . . . . . f f f . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.pizza)
+    tiles.placeOnTile(pizza, value)
+    tiles.setTileAt(value, assets.tile`transparency16`)
+}
+for (let value of tiles.getTilesByType(sprites.builtin.forestTiles0)) {
+    bubbles = sprites.create(img`
+        . . . . . . . . . f f f f f . . 
+        . f f f f f . . f 9 9 9 9 9 f . 
+        f 9 9 9 9 9 f . f 9 9 9 9 9 f . 
+        f 9 9 9 9 9 f . f 9 9 9 9 9 f . 
+        f 9 9 f f f f f f 9 9 9 9 9 f . 
+        f 9 9 f 9 9 f f f 9 9 9 9 9 f . 
+        f 9 9 f 9 9 f f f f f f f f . . 
+        . f f f f f 9 f 9 9 9 9 9 f . . 
+        f f f f f f f f f f 9 9 9 f . . 
+        f 9 9 9 f f 9 f 9 f 9 9 9 f . . 
+        f 9 9 9 f f 9 f f f 9 9 9 f . . 
+        f 9 9 9 f f f f f 9 9 9 9 f . . 
+        f f f f f f f 9 f 9 9 f f f f f 
+        f f f 9 9 f f f f 9 9 f 9 f 9 f 
+        f 9 f 9 9 9 f f f f f f f f 9 f 
+        f f f 9 9 9 9 9 9 9 9 f 9 9 9 f 
+        `, SpriteKind.bubbles)
+    tiles.placeOnTile(bubbles, value)
+    tiles.setTileAt(value, assets.tile`transparency16`)
+}
+for (let value of tiles.getTilesByType(assets.tile`myTile11`)) {
+    thingy = sprites.create(img`
+        3 . . . . . . . . . . . . . . . 
+        . 3 . . . . . . . . . . . . . . 
+        . . 3 . . 6 . . . . . . . . . . 
+        . . . 3 . . 6 . d . . 5 . . . . 
+        e . . . 3 . 6 d . . 5 . . . . . 
+        . e . . . 3 6 . . . 5 . . . . . 
+        . . e e 1 d 6 . . 5 . a a a a . 
+        . . . . a a a 6 a a a 1 . . . . 
+        a a a a . e . 6 5 . . . 1 1 1 . 
+        . . d . . . e 6 3 . . . . . . . 
+        . d . . . . 5 6 e 3 . . . . . . 
+        . . . . . . 5 . 6 e 3 . . . . . 
+        . . . . . . . . 6 . e e . . . . 
+        . . . . . . . . 6 . . . e . . . 
+        . . . . . . . . 6 . . . . e . . 
+        . . . . . . . . . . . . . . . . 
+        `, SpriteKind.thing)
+    tiles.placeOnTile(thingy, value)
+    tiles.setTileAt(value, assets.tile`transparency16`)
 }
